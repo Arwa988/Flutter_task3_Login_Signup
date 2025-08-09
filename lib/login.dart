@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'signup.dart';
+import 'home.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -62,7 +63,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 // Email Field
                 SizedBox(
                   width: 320,
-                  //Email Validator
                   child: TextFormField(
                     focusNode: _emailFocusNode,
                     autovalidateMode: _emailTouched
@@ -72,7 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       if (value == null || value.isEmpty) {
                         return "Empty Field";
                       } else if (!value.contains('@')) {
-                        return "Invalid email must conatin @";
+                        return "Invalid email must contain @";
                       }
                       return null;
                     },
@@ -81,8 +81,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       fillColor: const Color(0xFFF2F2F2),
                       hintText: 'Email',
                       prefixIcon: const Icon(Icons.email),
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 16),
+                      contentPadding:
+                          const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: const BorderSide(
@@ -100,7 +100,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 // Password Field
                 SizedBox(
                   width: 320,
-                  //Password Validator
                   child: TextFormField(
                     focusNode: _passwordFocusNode,
                     obscureText: _obscurePassword,
@@ -121,17 +120,19 @@ class _LoginScreenState extends State<LoginScreen> {
                       hintText: 'Password',
                       prefixIcon: const Icon(Icons.lock),
                       suffixIcon: IconButton(
-                        icon: Icon(_obscurePassword
-                            ? Icons.visibility_off
-                            : Icons.visibility),
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
                         onPressed: () {
                           setState(() {
                             _obscurePassword = !_obscurePassword;
                           });
                         },
                       ),
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 16),
+                      contentPadding:
+                          const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: const BorderSide(
@@ -149,14 +150,20 @@ class _LoginScreenState extends State<LoginScreen> {
                 // Login Button
                 MaterialButton(
                   onPressed: () {
-                    _formKey.currentState?.validate();
+                    if (_formKey.currentState!.validate()) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const HomeScreen()),
+                      );
+                    }
                   },
                   color: const Color.fromARGB(255, 86, 194, 253),
                   textColor: Colors.white,
                   minWidth: 200,
                   padding: const EdgeInsets.all(20),
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30)),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
                   child: const Text("Login"),
                 ),
                 const SizedBox(height: 10),
@@ -179,6 +186,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-
-
-
