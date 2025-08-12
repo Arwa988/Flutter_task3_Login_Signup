@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'signup.dart';
 import 'home.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -10,179 +11,131 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  bool _obscurePassword = true;
-  final _formKey = GlobalKey<FormState>();
-  final _emailFocusNode = FocusNode();
-  final _passwordFocusNode = FocusNode();
-  bool _emailTouched = false;
-  bool _passwordTouched = false;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _emailFocusNode.addListener(() {
-      if (_emailFocusNode.hasFocus && !_emailTouched) {
-        setState(() {
-          _emailTouched = true;
-        });
-      }
-    });
-
-    _passwordFocusNode.addListener(() {
-      if (_passwordFocusNode.hasFocus && !_passwordTouched) {
-        setState(() {
-          _passwordTouched = true;
-        });
-      }
-    });
-  }
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   @override
   void dispose() {
-    _emailFocusNode.dispose();
-    _passwordFocusNode.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Form(
-            key: _formKey,
-            autovalidateMode: AutovalidateMode.disabled,
-            child: Column(
-              children: [
-                const SizedBox(height: 20),
-                Image.asset('images/umberella.png', width: 250),
-                const SizedBox(height: 20),
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(height: 80),
 
-                // Email Field
-                SizedBox(
-                  width: 320,
-                  child: TextFormField(
-                    focusNode: _emailFocusNode,
-                    autovalidateMode: _emailTouched
-                        ? AutovalidateMode.always
-                        : AutovalidateMode.disabled,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Empty Field";
-                      } else if (!value.contains('@')) {
-                        return "Invalid email must contain @";
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: const Color(0xFFF2F2F2),
-                      hintText: 'Email',
-                      prefixIcon: const Icon(Icons.email),
-                      contentPadding:
-                          const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(
-                            color: Color.fromARGB(255, 195, 195, 195)),
-                      ),
-                      focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Color.fromARGB(255, 25, 147, 247)),
-                      ),
-                    ),
+            // Logo
+            SizedBox(
+              height: 150,
+              child: Image.asset(
+                'images/umberella.png',
+                width: 250,
+                fit: BoxFit.contain,
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // Animated welcome text
+            AnimatedTextKit(
+              animatedTexts: [
+                TypewriterAnimatedText(
+                  'Welcome to Our Application',
+                  textStyle: const TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 9, 61, 104),
                   ),
-                ),
-                const SizedBox(height: 20),
-
-                // Password Field
-                SizedBox(
-                  width: 320,
-                  child: TextFormField(
-                    focusNode: _passwordFocusNode,
-                    obscureText: _obscurePassword,
-                    autovalidateMode: _passwordTouched
-                        ? AutovalidateMode.always
-                        : AutovalidateMode.disabled,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Empty Field";
-                      } else if (value.length < 8) {
-                        return "Password must be at least 8 characters";
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: const Color(0xFFF2F2F2),
-                      hintText: 'Password',
-                      prefixIcon: const Icon(Icons.lock),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscurePassword
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _obscurePassword = !_obscurePassword;
-                          });
-                        },
-                      ),
-                      contentPadding:
-                          const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(
-                            color: Color.fromARGB(255, 195, 195, 195)),
-                      ),
-                      focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Color.fromARGB(255, 25, 147, 247)),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-
-                // Login Button
-                MaterialButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const HomeScreen()),
-                      );
-                    }
-                  },
-                  color: const Color.fromARGB(255, 86, 194, 253),
-                  textColor: Colors.white,
-                  minWidth: 200,
-                  padding: const EdgeInsets.all(20),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: const Text("Login"),
-                ),
-                const SizedBox(height: 10),
-
-                // Navigate to SignUp
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const SignScreen()),
-                    );
-                  },
-                  child: const Text("Don't have an account? Sign up"),
+                  speed: const Duration(milliseconds: 100),
                 ),
               ],
+              totalRepeatCount: 1,
+              pause: const Duration(milliseconds: 500),
+              displayFullTextOnTap: true,
+              stopPauseOnTap: true,
             ),
-          ),
+
+            const SizedBox(height: 40),
+
+            // Email field
+            TextField(
+              controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                labelText: 'Email',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Password field
+            TextField(
+              controller: _passwordController,
+              obscureText: true,
+              decoration: InputDecoration(
+                labelText: 'Password',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Login button
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 80,
+                  vertical: 15,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: const Text(
+                'Login',
+                style: TextStyle(fontSize: 18, color: Colors.white),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            
+            
+            // TextButton(
+            //   onPressed: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(builder: (context) => const SignupScreen()),
+            //     );
+            //   },
+            //   child: const Text(
+            //     'Don\'t have an account? Sign Up',
+            //     style: TextStyle(fontSize: 16, color: Colors.blue),
+            //   ),
+            // ),
+            
+          ],
         ),
       ),
     );
   }
 }
+
